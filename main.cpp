@@ -16,16 +16,17 @@ int main(int argc, char ** argv) {
 
     jpm::list_c<double> auto list = jpm::list<double>();
 //    jpm::list<int> list;
-    if(!list.append(6.0)) { std::cout << "wat!?\n"; }
-    if(!list.append(0.)) { std::cout << "wat!?\n"; }
-    if(!list.append(-5.3)) { std::cout << "wat!?\n"; }
-    if(!list.append(3.1)) { std::cout << "wat!?\n"; }
+    list.append(0);
+    list.append(-1);
+    list.append(0);
 
-    for(auto  & i : const_cast<const jpm::list<double>&>(list)){
-        std::cout << i << '\n';
-    }
+//    if(!list.append(-5.3)) { std::exit(EXIT_FAILURE); }
+//    if(!list.append(3.1)) { std::exit(EXIT_FAILURE); }
+//
     std::cout << "Hello, World!" << std::endl;
-    return session.run(argc, argv);
     c4a2::display(list);
+    std::cout << std::endl;
+    return session.run(argc, argv);
+
     std::cout << c4a2::evaluate(list, 7.0) << '\n';
 }

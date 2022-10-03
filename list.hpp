@@ -27,12 +27,31 @@ namespace jpm {
         using node_ptr = node_c_t *;
 
         list() = default;
-        list(list const &) = default;
-        list(list &&) noexcept = default;
+        list(list const & other) {
+            if(&other == this) return;
+            for(auto const &e: other){
+                append(e);
+            }
+        }
+        list(list && other) noexcept {
+            head = other.head;
+            tail = other.tail;
+            size_val = other.size_val;
+            other.head = nullptr;
+            other.tail = nullptr;
+            other.size_val = 0;
+
+        };
         list &operator=(list const &) = default;
         list &operator=(list &&) noexcept = default;
 
-        ~list() = default;
+        ~list() {
+            while(head != nullptr) {
+                auto temp = head;
+                head = head->next;
+                delete temp;
+            }
+        }
 
         iterator begin()  noexcept { return iterator{head};}
         iterator end()  noexcept{ return iterator{nullptr};}
@@ -52,14 +71,9 @@ namespace jpm {
         template <class V>
         friend void swap(list & a, list & b);
         void swap(list & other){
-            auto temp_head = other.head;
-            auto temp_tail = other.tail;
-
-            other.head = head;
-            other.tail = tail;
-
-            head = temp_head;
-            tail = temp_tail;
+            auto &&temp = std::move(other);
+            other = std::move(*this);
+            *this = std::move(temp);
         }
 
         [[nodiscard]] size_type size() const noexcept{return size_val;}
@@ -93,7 +107,9 @@ namespace jpm {
     };
 
     template<class T, jpm::node_c node_c_t>
-    void swap(jpm::list<T, node_c_t> &a, jpm::list<T, node_c_t> &b);
+    void swap(jpm::list<T, node_c_t> &a, jpm::list<T, node_c_t> &b){
+        a.swap(b);
+    }
 }
 
 //#include "list_impl.hpp"
