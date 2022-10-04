@@ -4,6 +4,7 @@
 
 #include "assignment.hpp"
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_approx.hpp>
 
 #include "list"
 #include "list_concepts.hpp"
@@ -83,23 +84,30 @@ TEST_CASE("c4a2::evaluate"){
     }
 
     //test 2
+    
     {
         // x2 - 1.0 ............................. with x = 2.03
         jpm::list<double> t1;
+        t1.append(1);
         t1.append(0);
         t1.append(-1);
-        t1.append(0);
 
-        REQUIRE(c4a2::evaluate(t1, 2.03) == 3.1209);
+        // floating point strageness it passes.
+        auto const r{c4a2::evaluate(t1, 2.03)};
+        auto const target{3.1209};
+        REQUIRE(r == Catch::Approx(target));
         //
     }
 
-    //test 2
+    //test 3
     {
+//         -3.0x^3 + 0.5x^2 - 2.0x ................ with x = 05.0
         jpm::list<double> t1;
-        t1.append(0);
-        t1.append(-1);
-//        REQUIRE(c4a2::evaluate(t1, 2.03) == 3.1209);
+        t1.append(-3);
+        t1.append(.5);
+        t1.append(2);
+        t1.append(.0);
+        REQUIRE(c4a2::evaluate(t1, 5) == -352.5);
         //
     }
 
