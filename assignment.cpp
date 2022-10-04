@@ -2,7 +2,7 @@
 // Created by james on 9/27/2022.
 //
 #include "assignment.hpp"
-#include <fmt/format.h>
+//#include <fmt/format.h>
 #include <cmath>
 
 bool c4a2::appendTerm(jpm::list<double> &Polynomial, double constant) {
@@ -22,30 +22,41 @@ void c4a2::display(jpm::list<double> const &Polynomial) {
         return d < 0.0 ? '-' : '+';
     };
 
-    auto const max_size{Polynomial.size() - 1};
+    auto print = [has_printed{false}, expo{Polynomial.size() - 1}](double d)mutable {
+        auto print_x_exp = [](unsigned long expo, double d){
+            if(expo == 1){
+                std::cout << "x";
+            }
+            else if(expo != 0){
+                std::cout << "x^" << expo;
+            }
+        };
+        auto do_sign = [](double d) {
+            return d < 0.0 ? '-' : '+';
+        };
+        if(!has_printed){
+            if(d == 1){
+                print_x_exp(expo, d);
+                has_printed = true;
+            }
+            else if(d != 0){
+                has_printed = true;
+                std::cout << d;
+                print_x_exp(expo, d);
 
-    auto iterator = Polynomial.begin();
-    for (long long my_exp{max_size}; my_exp > -1; --my_exp, ++iterator) {
-        double d = std::abs(*iterator);
-
-        // If x is 0 we don't need to display anything
-        if (*iterator == 0) { continue; }
-
-        if (my_exp == max_size) { // avoid doing leading sign
-            std::cout << *iterator << "x^" << my_exp << ' ';
-        } else if (my_exp == 1) {
-            std::cout << do_sign(*iterator) << " " << d << "x";
-            auto t = iterator;
-            t++;
-            if (*t != 0) { std::cout << " "; }
-
-        } else if (my_exp == 0) { // don't display the variable (x)
-            std::cout << do_sign(*iterator) << " " << std::abs(*iterator);
-        } else { // display everything
-            std::cout << do_sign(*iterator) << " " << std::abs(*iterator)
-                      << "x^" << my_exp << ' ';
+            }
         }
-
+        else{
+            if(d != 0){
+                has_printed = true;
+                std::cout << ' ' << do_sign(d) << ' ' << std::abs(d);
+                print_x_exp(expo, d);
+            }
+        }
+        --expo;
+    };
+    for(auto r : Polynomial){
+        print(r);
     }
 }
 
@@ -58,50 +69,10 @@ double c4a2::evaluate(const jpm::list<double> &Polynomial, double x) {
     auto exponent{Polynomial.size() - 1};
 
     // iterate over every element and apply the result of the term to exponent
-//    fmt::print("{}\n", product);
-//    fmt::print("{}\n", std::pow(x, (exponent)));
-
     for (auto element: Polynomial) {
 
 
-//        if(element != 0) {
-            product += element * std::pow(x, (exponent));
-//        }
-            fmt::print("{} - {} - {} \n", element, std::pow(x, (exponent)), product);
-            --exponent;
+            product += element * std::pow(x, (exponent--));
     }
-    fmt::print("{}......\n", product);
-
-
-//    for (auto element: products) {
-//        std::cout << "X: " << x << " term: " << element << "product" << product << '\n';
-//        product += element;
-//    }
-
         return product;
 }
-
-
-
-
-
-
-
-
-
-//
-//        if(element == 0) { continue;}
-//        else if(exponent == 2){
-//            --exponent;
-//            if(element > 0)
-//                product += element * x;
-//            else
-//                product -= std::abs(element) * x;
-//        }
-//        else if(exponent == 1){product += element;}
-//        else {
-//            if(element > 0)
-//                product += element * std::pow(x, (exponent--));
-//            else
-//                product -= element * std::pow(x, (exponent--));
-//        }
